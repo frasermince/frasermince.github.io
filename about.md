@@ -3,9 +3,8 @@ layout: page
 title: About
 permalink: /about/
 ---
+Hello. My name is Fraser Mince. I am a developer who is currently starting a
+company called MultiplyMe and working for another startup called Byte! I mostly
+program in Ruby and Javascript right now. I am currently learning a lot about
+Haskell, refactoring, and startups!
 
-This is the base Jekyll theme. You can find out more info about customizing your Jekyll theme, as well as basic Jekyll usage documentation at [jekyllrb.com](http://jekyllrb.com/)
-
-You can find the source code for the Jekyll new theme at: [github.com/jglovier/jekyll-new](https://github.com/jglovier/jekyll-new)
-
-You can find the source code for Jekyll at [github.com/jekyll/jekyll](https://github.com/jekyll/jekyll)
