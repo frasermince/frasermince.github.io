@@ -20,6 +20,8 @@ In this app there is a join table called OrganizationsUser responsible for keepi
 
 Another problem I was having was that my test suite was running slow because I was allowing stripe calls to happen in a number of tests. I decided to use VCR to speed up my test suite. [Here][stripe_client_spec] is an example of a file that uses VCR to avoid doing http requests. There are plenty of other examples of this throughout the code. Another problem with my test suite is I originally had a lot of different [donation factories][donation_factories_old]. I decided that this constituted a mystery guest and thus [got rid of][donation_factories_new] most of these in favor of having just a couple of factories. Instead of the multiple factories I set the fields I needed on a test by test basis.
 
+This has been a small tour through some changes I have made to my code. There is a lot more to this project. Some of it is good code and some of it still needs work. Feel free to check out the rest [on github][develop]. The code has about 95% test coverage and has had a lot of work put into it. Let me know if you have any questions and I hope to hear from you soon!
+
 [pledgeable]: https://github.com/frasermince/MultiplyMeApi/blob/b4b37adf627f6ef42769010161fc812c05095522/app/models/concerns/pledgeable.rb
 [after]: https://github.com/frasermince/MultiplyMeApi/blob/b4b37adf627f6ef42769010161fc812c05095522/app/models/concerns/pledgeable.rb#L4
 [stripe_client]: https://github.com/frasermince/MultiplyMeApi/blob/d818966c4545f8447b685a3c153aea2ef6a4eba1/app/models/stripe_client.rb
@@ -40,3 +42,4 @@ Another problem I was having was that my test suite was running slow because I w
 [one_time]: https://github.com/frasermince/MultiplyMeApi/blob/f5accf96136fc93851c7c95a7a5ac6711bd26223/app/models/payments/one_time_payment.rb
 [subscription]: https://github.com/frasermince/MultiplyMeApi/blob/f5accf96136fc93851c7c95a7a5ac6711bd26223/app/models/payments/subscription_payment.rb
 [after_function]: https://github.com/frasermince/MultiplyMeApi/blob/b4b37adf627f6ef42769010161fc812c05095522/app/models/concerns/pledgeable.rb#L21
+[develop]: https://github.com/frasermince/MultiplyMeApi/tree/f95765606cfceb3320634c4eaf4d0e07d8857a92
