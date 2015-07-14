@@ -1,0 +1,41 @@
+---
+layout: post
+title:  "Code Sample"
+date:   2015-07-11 22:53:45
+categories: refator code sample
+---
+Hi! I'm going to walk you through a project of mine, the pieces that were broken windows, and how I fixed them. This project is the API from a startup I have been working on. This was one of the first projects I did using test driven development. However recently I have refactored large pieces of it. So I will list out some of the problems it had (with links) and show you how I fixed them.
+
+I started with several code smells and broken windows. The biggest piece of this project involves creating donations. There is a lot of logic related to donations and paying for them. To avoid making my model too big (and in a failed attempt to follow Sandi Metz' rules) I put this logic in a [concern][pledgeable] and included it in the donation model. However I still ended up having a lot of unrelated logic in one class and ended up with a large class. There are several things I wanted to do after creating a donation and I placed all of these in a [after create hook][after]. Recently however I have been watching upcase videos and reading "Ruby Science" and through this have learned much more about best practices.
+
+I currently had a lot of the stripe logic built into [a concern included on the donation model][create_subscription]. I decided to create a separate model just for the [stripe client][stripe_client]. One concern with this stripe client is feature envy due to the fact that a couple of methods in here that use their parameters more than self. Despite this I felt it was best to keep anything that will make a call to the stripe API in one class. This makes it so there is only one file that can directly make a stripe call. This lowers the possible complexity and is worth the code smell.
+
+In this app we have a join table called OrganizationsUser responsible for keeping up with customers on specific organizations. Before much of the logic to get the right customer for a purchase was done in my [organization model]. This is an obvious case of feature envy because several of these methods are more interested in their parameters and OrganizationsUser than they are in Organization itself. I did two different things to fix this. First I moved several of these methods to the [OrganizationsUser][OrganizationsUser] thus fixing the feature envy. I then realized that most of these methods could just call the stripe_client. This made the logic much simpler and allowed me to DRY up my code.
+
+To deal with the after create hook I needed to create a [decorator][decorator]. This not only has the benefit of removing the after_create code but also removes much of the complexity of the donation_controller. Originally the [donation controller][old_donation_controller] was complex and filled with several steps. By moving this into the decorator the [controller becomes much simpler][new_donation_controller].
+
+The original after create hook had to call some fairly complicated logic to determine if we should charge the customer or not. We have a certain challenge that had to be passed before the user is allowed to donate. [The helper functions that determined this][old_policy] used to live in that same concern as the stripe payment. This turned out to be a perfect use case for a [policy object][new_policy]. This is a much better solution than just placing it on a model since it now follows the single responsibility principle.
+
+This policy is just one piece to determining if a charge should be made. Whenever a donation is created there are several things that can happen. On each one of these occasions either the created donation, the referrer donation, or both can be charged. Also either of these can be a one time donation or a subscription. I originally had the [after create function][after] decide which donation to charge and had [another function][purchase] decide if it was a donation or a subscription. I decided to replace this with a [factory][factory] that would build a payment service. The factory can create OneTimePayment and SubscriptionPayment strategies as needed. It then passes these strategies to the payment service as an array. All the [payment service][payment_service] does is call pay on each element of the strategy array it gets as a parameter. The [different][one_time] [strategies][subscription] just have a method called pay that just call their respective methods on the stripe_client. This really makes all the classes very cohesive and enforces separation of concerns.
+
+Another problem I was having was that my test suite was running slow because I was allowing stripe calls to happen in a number of tests. I decided to use VCR to speed up my test suite. [Here][stripe_client_spec] is an example of a file that uses VCR to avoid doing http requests. There are plenty of other examples of this throughout the code. Another problem with my test suite is I originally had a lot of different [donation factories][donation_factories_old]. I decided that this constituted a mystery guest and thus [got rid of][donation_factories_new] most of these in favor of having just a couple of factories. Instead of the multiple factories I set the fields I needed on a test by test basis.
+
+[pledgeable]: https://github.com/frasermince/MultiplyMeApi/blob/b4b37adf627f6ef42769010161fc812c05095522/app/models/concerns/pledgeable.rb
+[after]: https://github.com/frasermince/MultiplyMeApi/blob/b4b37adf627f6ef42769010161fc812c05095522/app/models/concerns/pledgeable.rb#L21
+[stripe_client]: https://github.com/frasermince/MultiplyMeApi/blob/d818966c4545f8447b685a3c153aea2ef6a4eba1/app/models/stripe_client.rb
+[stripe_client_spec]: https://github.com/frasermince/MultiplyMeApi/blob/d818966c4545f8447b685a3c153aea2ef6a4eba1/spec/models/stripe_client_spec.rb
+[donation_factories_old]: https://github.com/frasermince/MultiplyMeApi/blob/b4b37adf627f6ef42769010161fc812c05095522/spec/factories/donation.rb
+[donation_factories_new]: https://github.com/frasermince/MultiplyMeApi/blob/d818966c4545f8447b685a3c153aea2ef6a4eba1/spec/factories/donation.rb
+[create_subscription]: https://github.com/frasermince/MultiplyMeApi/blob/b4b37adf627f6ef42769010161fc812c05095522/app/models/concerns/pledgeable.rb#L73
+[decorator]: https://github.com/frasermince/MultiplyMeApi/blob/d818966c4545f8447b685a3c153aea2ef6a4eba1/app/decorators/donation_decorator.rb
+[old_donation_controller]: https://github.com/frasermince/MultiplyMeApi/blob/b4b37adf627f6ef42769010161fc812c05095522/app/controllers/api/v1/donations_controller.rb#L5
+[new_donation_controller]: https://github.com/frasermince/MultiplyMeApi/blob/e5cb0c41893c26f2619f29ef4b786a72ba2f1407/app/controllers/api/v1/donations_controller.rb#L5
+[organization_model]: https://github.com/frasermince/MultiplyMeApi/blob/b4b37adf627f6ef42769010161fc812c05095522/app/models/organization.rb#L25
+[OrganizationsUser]: https://github.com/frasermince/MultiplyMeApi/blob/f5accf96136fc93851c7c95a7a5ac6711bd26223/app/models/organizations_user.rb#L25
+[old_policy]: https://github.com/frasermince/MultiplyMeApi/blob/b4b37adf627f6ef42769010161fc812c05095522/app/models/concerns/pledgeable.rb#L69
+[new_policy]: https://github.com/frasermince/MultiplyMeApi/blob/f5accf96136fc93851c7c95a7a5ac6711bd26223/app/policies/completed_challenge_policy.rb
+[purchase]: https://github.com/frasermince/MultiplyMeApi/blob/b4b37adf627f6ef42769010161fc812c05095522/app/models/concerns/pledgeable.rb#L106
+[factory]: https://github.com/frasermince/MultiplyMeApi/blob/f5accf96136fc93851c7c95a7a5ac6711bd26223/app/models/payments/payment_factory.rb
+[payment_service]: https://github.com/frasermince/MultiplyMeApi/blob/f5accf96136fc93851c7c95a7a5ac6711bd26223/app/services/payment_service.rb
+[one_time]: https://github.com/frasermince/MultiplyMeApi/blob/f5accf96136fc93851c7c95a7a5ac6711bd26223/app/models/payments/one_time_payment.rb
+[subscription]: https://github.com/frasermince/MultiplyMeApi/blob/f5accf96136fc93851c7c95a7a5ac6711bd26223/app/models/payments/subscription_payment.rb
