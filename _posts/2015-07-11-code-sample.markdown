@@ -21,7 +21,7 @@ In this app we have a join table called OrganizationsUser responsible for keepin
 Another problem I was having was that my test suite was running slow because I was allowing stripe calls to happen in a number of tests. I decided to use VCR to speed up my test suite. [Here][stripe_client_spec] is an example of a file that uses VCR to avoid doing http requests. There are plenty of other examples of this throughout the code. Another problem with my test suite is I originally had a lot of different [donation factories][donation_factories_old]. I decided that this constituted a mystery guest and thus [got rid of][donation_factories_new] most of these in favor of having just a couple of factories. Instead of the multiple factories I set the fields I needed on a test by test basis.
 
 [pledgeable]: https://github.com/frasermince/MultiplyMeApi/blob/b4b37adf627f6ef42769010161fc812c05095522/app/models/concerns/pledgeable.rb
-[after]: https://github.com/frasermince/MultiplyMeApi/blob/b4b37adf627f6ef42769010161fc812c05095522/app/models/concerns/pledgeable.rb#L21
+[after]: https://github.com/frasermince/MultiplyMeApi/blob/b4b37adf627f6ef42769010161fc812c05095522/app/models/concerns/pledgeable.rb#L4
 [stripe_client]: https://github.com/frasermince/MultiplyMeApi/blob/d818966c4545f8447b685a3c153aea2ef6a4eba1/app/models/stripe_client.rb
 [stripe_client_spec]: https://github.com/frasermince/MultiplyMeApi/blob/d818966c4545f8447b685a3c153aea2ef6a4eba1/spec/models/stripe_client_spec.rb
 [donation_factories_old]: https://github.com/frasermince/MultiplyMeApi/blob/b4b37adf627f6ef42769010161fc812c05095522/spec/factories/donation.rb
