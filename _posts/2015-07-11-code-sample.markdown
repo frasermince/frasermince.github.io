@@ -4,7 +4,7 @@ title:  "Code Sample"
 date:   2015-07-11 22:53:45
 categories: refator code sample
 ---
-Hi! I'm going to walk you through a project of mine, the pieces that were broken windows, and how I fixed them. This project is the API from a startup I have been working on. This was one of the first projects I did using test driven development. However recently I have refactored large pieces of it. So I will list out some of the problems it had (with links) and show you how I fixed them.
+Hi! I'm going to walk you through a project of mine, the pieces that were broken windows, and how I fixed them. This project is the API from a startup I have been working on. This was one of the first projects I did using test driven development. Recently however I have refactored large pieces of it. So I will list out some of the problems it had (with links) and show you how I fixed them.
 
 I started with several code smells and broken windows. The biggest piece of this project involves creating donations. There is a lot of logic related to donations and paying for them. To avoid making my model too big (and in a failed attempt to follow Sandi Metz' rules) I previously put this logic in a [concern][pledgeable] and included it in the donation model. However I still had a lot of unrelated logic in one place and ended up with a large class. There were several things I wanted to do after creating a donation and I had placed all of these in an [after create hook][after]. Recently I have been watching upcase videos and reading "Ruby Science". Through this I have learned that many of the things I thought were clever before are actually bad practices. In order to apply my new knowledge I decided to refactor this code to move away from the aforementioned code smells.
 
