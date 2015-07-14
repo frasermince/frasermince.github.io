@@ -27,7 +27,7 @@ Another problem I was having was that my test suite was running slow because I w
 [donation_factories_old]: https://github.com/frasermince/MultiplyMeApi/blob/b4b37adf627f6ef42769010161fc812c05095522/spec/factories/donation.rb
 [donation_factories_new]: https://github.com/frasermince/MultiplyMeApi/blob/d818966c4545f8447b685a3c153aea2ef6a4eba1/spec/factories/donation.rb
 [create_subscription]: https://github.com/frasermince/MultiplyMeApi/blob/b4b37adf627f6ef42769010161fc812c05095522/app/models/concerns/pledgeable.rb#L73
-[decorator]: https://github.com/frasermince/MultiplyMeApi/blob/d818966c4545f8447b685a3c153aea2ef6a4eba1/app/decorators/donation_decorator.rb
+[decorator]: https://github.com/frasermince/MultiplyMeApi/blob/f95765606cfceb3320634c4eaf4d0e07d8857a92/app/decorators/donation_decorator.rb
 [old_donation_controller]: https://github.com/frasermince/MultiplyMeApi/blob/b4b37adf627f6ef42769010161fc812c05095522/app/controllers/api/v1/donations_controller.rb#L5
 [new_donation_controller]: https://github.com/frasermince/MultiplyMeApi/blob/e5cb0c41893c26f2619f29ef4b786a72ba2f1407/app/controllers/api/v1/donations_controller.rb#L5
 [organization_model]: https://github.com/frasermince/MultiplyMeApi/blob/b4b37adf627f6ef42769010161fc812c05095522/app/models/organization.rb#L25
